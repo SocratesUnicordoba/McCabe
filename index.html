@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Analizador McCabe</title>
+  <meta name="description" content="Calcula la complejidad ciclomática de McCabe, dibuja el grafo de flujo y obtiene los caminos independientes de un programa. / Computes McCabe cyclomatic complexity, draws the control-flow graph and lists the independent paths.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <a class="skip" href="#principal" data-i18n="skip">Saltar al contenido principal</a>
+
+  <header class="top">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">V(G)</span>
+      <div>
+        <h1 data-i18n="app.title">Analizador de Complejidad Ciclomática</h1>
+        <p data-i18n="app.subtitle">Métrica de McCabe · grafo de flujo · caminos independientes</p>
+      </div>
+    </div>
+    <nav class="top-actions" aria-label="Opciones">
+      <button id="btnTeoria" class="ghost" type="button" aria-haspopup="dialog">
+        <span aria-hidden="true">📘</span><span class="btn-txt" data-i18n="btn.theory">Teoría</span>
+      </button>
+      <button id="btnLangs" class="ghost" type="button" aria-haspopup="dialog">
+        <span aria-hidden="true">&lt;/&gt;</span><span class="btn-txt" data-i18n="btn.langs">Lenguajes</span>
+      </button>
+      <button id="btnIdioma" class="ghost idioma" type="button" data-i18n-aria="btn.lang.aria" aria-label="Switch to English">
+        <span aria-hidden="true">🌐</span><span id="idiomaTxt" lang="en">EN</span>
+      </button>
+      <button id="btnTema" class="ghost icon" type="button" data-i18n-aria="btn.theme" data-i18n-title="btn.theme" aria-label="Cambiar entre tema claro y oscuro">
+        <span aria-hidden="true">◐</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Región para anuncios a lectores de pantalla -->
+  <div id="sr" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <main id="principal" tabindex="-1">
+    <!-- ============ Entrada ============ -->
+    <section class="panel entrada" aria-labelledby="h-entrada">
+      <h2 id="h-entrada"><span class="step" aria-hidden="true">1</span> <span data-i18n="in.title">Cargar programa</span></h2>
+
+      <label id="dropzone" class="drop">
+        <input type="file" id="fileInput" class="sr-only" multiple aria-describedby="dropHint"
+          accept=".js,.mjs,.cjs,.jsx,.ts,.tsx,.java,.c,.h,.cpp,.cc,.cxx,.hpp,.hh,.cs,.php,.go,.py,.pyw,.txt">
+        <span class="drop-icon" aria-hidden="true">⇪</span>
+        <strong data-i18n="in.drop">Arrastra archivos aquí o haz clic para elegirlos</strong>
+        <small id="dropHint" data-i18n="in.dropHint">Con teclado: Tab hasta aquí y pulsa Enter</small>
+      </label>
+
+      <p class="soporte">
+        <span><span data-i18n="in.supported">Lenguajes soportados</span>:</span>
+        <span class="chips">
+          <span class="chip">JavaScript</span><span class="chip">TypeScript</span><span class="chip">Java</span>
+          <span class="chip">C</span><span class="chip">C++</span><span class="chip">C#</span>
+          <span class="chip">PHP</span><span class="chip">Go</span><span class="chip">Python</span>
+        </span>
+        <button type="button" class="link" id="btnLangs2" aria-haspopup="dialog" data-i18n="in.supported.more">ver detalles</button>
+      </p>
+
+      <div class="row">
+        <select id="ejemplos" data-i18n-aria="in.examples.aria" aria-label="Programas de ejemplo"></select>
+        <button id="btnNuevo" type="button" class="secondary"><span aria-hidden="true">+ </span><span data-i18n="in.paste">Pegar código</span></button>
+      </div>
+
+      <div id="tabs" class="tabs" role="list" data-i18n-aria="in.files" aria-label="Archivos cargados"></div>
+
+      <div class="editor-bar">
+        <label for="lang" data-i18n="in.lang">Lenguaje</label>
+        <select id="lang"></select>
+        <span id="langDetect" class="muted small" aria-live="polite"></span>
+      </div>
+      <label for="editor" class="sr-only" data-i18n="in.editor">Código fuente</label>
+      <textarea id="editor" spellcheck="false" autocapitalize="off" autocomplete="off" data-i18n-ph="in.editor.ph" aria-describedby="editorHelp"></textarea>
+      <p id="editorHelp" class="muted small help" data-i18n="in.editor.help">El análisis se actualiza solo mientras escribes.</p>
+
+      <fieldset class="opciones">
+        <label class="chk">
+          <input type="checkbox" id="optLogical" checked aria-describedby="logicalHelp">
+          <span><span data-i18n="in.logical">Contar condiciones compuestas</span>
+            <small id="logicalHelp" class="muted" data-i18n="in.logical.help"></small></span>
+        </label>
+        <label class="chk">
+          <input type="checkbox" id="optPractice" aria-describedby="practiceHelp">
+          <span><span data-i18n="in.practice">Modo práctica</span>
+            <small id="practiceHelp" class="muted" data-i18n="in.practice.help"></small></span>
+        </label>
+      </fieldset>
+
+      <button id="btnAnalizar" class="primary" type="button" data-i18n="in.analyze">Analizar complejidad</button>
+    </section>
+
+    <!-- ============ Resumen ============ -->
+    <section class="panel resultados" aria-labelledby="h-res">
+      <div class="panel-head">
+        <h2 id="h-res"><span class="step" aria-hidden="true">2</span> <span data-i18n="res.title">Resultados</span></h2>
+        <button id="btnCSV" class="secondary small-btn" type="button" disabled data-i18n="res.csv">Exportar CSV</button>
+      </div>
+      <div id="resumen" class="resumen"></div>
+      <div class="table-wrap">
+        <table id="tabla" class="tabla" hidden>
+          <caption class="sr-only" data-i18n="res.caption"></caption>
+          <thead>
+            <tr>
+              <th scope="col" data-k="file" class="col-file"><button type="button" class="th-btn" data-i18n="th.file">Archivo</button></th>
+              <th scope="col" data-k="name"><button type="button" class="th-btn" data-i18n="th.fn">Función</button></th>
+              <th scope="col" data-k="line" class="num col-lines"><button type="button" class="th-btn" data-i18n="th.lines">Líneas</button></th>
+              <th scope="col" data-k="N" class="num col-ne"><button type="button" class="th-btn"><abbr data-i18n="th.N" data-i18n-title="th.N.t">N</abbr></button></th>
+              <th scope="col" data-k="E" class="num col-ne"><button type="button" class="th-btn"><abbr data-i18n="th.E" data-i18n-title="th.E.t">E</abbr></button></th>
+              <th scope="col" data-k="P" class="num col-ne"><button type="button" class="th-btn"><abbr data-i18n="th.P" data-i18n-title="th.P.t">P</abbr></button></th>
+              <th scope="col" data-k="V" class="num"><button type="button" class="th-btn"><abbr data-i18n="th.V" data-i18n-title="th.V.t">V(G)</abbr></button></th>
+              <th scope="col" data-i18n="th.risk">Riesgo</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ============ Detalle ============ -->
+    <section id="detalle" class="panel detalle" hidden aria-labelledby="h-det" tabindex="-1">
+      <div class="det-head">
+        <div>
+          <h2 id="h-det"><span class="step" aria-hidden="true">3</span> <span id="detNombre"></span></h2>
+          <p id="detMeta" class="muted"></p>
+        </div>
+        <div id="detBadge" class="vg-badge"></div>
+      </div>
+
+      <!-- Ejercicio (modo práctica) -->
+      <form id="quiz" class="quiz" hidden novalidate aria-labelledby="quizTitle">
+        <h3 id="quizTitle" data-i18n="q.title">Ponte a prueba</h3>
+        <p id="quizAsk"></p>
+        <div class="quiz-row">
+          <label for="quizInput" data-i18n="q.label">Tu respuesta para V(G)</label>
+          <input id="quizInput" type="number" min="1" step="1" inputmode="numeric" aria-describedby="quizFb">
+          <button type="submit" class="primary inline" data-i18n="q.check">Comprobar</button>
+          <button type="button" id="quizReveal" class="secondary" data-i18n="q.reveal">Ver la solución</button>
+        </div>
+        <p id="quizFb" class="quiz-fb" role="status" aria-live="polite"></p>
+      </form>
+
+      <div id="solucion">
+        <div id="formulas" class="formulas"></div>
+        <p id="interpretacion" class="interp"></p>
+
+        <!-- Recorrido guiado -->
+        <section id="tour" class="tour" aria-labelledby="tourTitle">
+          <div class="tour-head">
+            <h3 id="tourTitle" data-i18n="tour.title">Recorrido guiado</h3>
+            <span id="tourStep" class="muted small"></span>
+          </div>
+          <div class="tour-body" aria-live="polite">
+            <h4 id="tourStepTitle"></h4>
+            <p id="tourText"></p>
+          </div>
+          <div class="tour-foot">
+            <ol id="tourDots" class="dots" aria-hidden="true"></ol>
+            <div class="tour-btns">
+              <button type="button" id="tourPrev" class="secondary" data-i18n="tour.prev">Anterior</button>
+              <button type="button" id="tourNext" class="primary inline" data-i18n="tour.next">Siguiente</button>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div class="det-grid">
+        <section class="card grafo-card" aria-labelledby="gTitle">
+          <div class="card-head">
+            <h3 id="gTitle" data-i18n="g.title">Grafo de flujo de control</h3>
+            <div class="zoom" role="group" aria-label="Zoom">
+              <button type="button" data-z="-1" data-i18n-aria="g.zoomOut" data-i18n-title="g.zoomOut">−</button>
+              <button type="button" data-z="0" data-i18n-aria="g.fit" data-i18n-title="g.fit">⤢</button>
+              <button type="button" data-z="1" data-i18n-aria="g.zoomIn" data-i18n-title="g.zoomIn">+</button>
+              <button type="button" id="btnSVG" data-i18n-aria="g.svg" data-i18n-title="g.svg">SVG ↓</button>
+            </div>
+          </div>
+          <p class="muted small help" data-i18n="g.help"></p>
+          <div id="grafo" class="grafo"></div>
+          <ul class="leyenda">
+            <li><span class="lg lg-term" aria-hidden="true"></span><span data-i18n="lg.term">Inicio / fin</span></li>
+            <li><span class="lg lg-block" aria-hidden="true"></span><span data-i18n="lg.block">Bloque</span></li>
+            <li><span class="lg lg-dec" aria-hidden="true"></span><span data-i18n="lg.dec">Nodo predicado</span></li>
+            <li><span class="lg lg-back" aria-hidden="true"></span><span data-i18n="lg.back">Retorno de bucle</span></li>
+          </ul>
+        </section>
+
+        <section class="card codigo-card" aria-labelledby="cTitle">
+          <div class="card-head"><h3 id="cTitle" data-i18n="code.title">Código fuente</h3><span class="muted small" data-i18n="code.hint"></span></div>
+          <div id="codigo" class="codigo" tabindex="0" role="region" data-i18n-aria="code.title"></div>
+        </section>
+
+        <section class="card" aria-labelledby="pTitle">
+          <div class="card-head"><h3 id="pTitle" data-i18n="pred.title">Nodos predicado</h3><span id="predCount" class="muted small"></span></div>
+          <ol id="predicados" class="lista"></ol>
+        </section>
+
+        <section class="card" aria-labelledby="cmTitle">
+          <div class="card-head"><h3 id="cmTitle" data-i18n="path.title">Caminos independientes</h3><span id="pathCount" class="muted small"></span></div>
+          <ol id="caminos" class="lista caminos"></ol>
+        </section>
+
+        <details class="card nodos-card">
+          <summary><h3 data-i18n="nodes.title">Tabla de nodos</h3></summary>
+          <div class="table-wrap">
+            <table class="tabla compacta">
+              <caption class="sr-only" data-i18n="nodes.title"></caption>
+              <thead><tr>
+                <th scope="col" class="num" data-i18n="nodes.num">#</th>
+                <th scope="col" data-i18n="nodes.kind">Tipo</th>
+                <th scope="col" class="num" data-i18n="nodes.line">Línea</th>
+                <th scope="col" data-i18n="nodes.content">Contenido</th>
+                <th scope="col" class="num" data-i18n="nodes.out">Salidas</th>
+              </tr></thead>
+              <tbody id="nodos"></tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="teoria" class="dlg" aria-labelledby="teoriaTitle">
+    <form method="dialog" class="dlg-close"><button data-i18n-aria="close" aria-label="Cerrar">✕</button></form>
+    <h2 id="teoriaTitle" data-i18n="theory.title">Complejidad ciclomática de McCabe</h2>
+    <div data-i18n-html="theory.html"></div>
+  </dialog>
+
+  <dialog id="lenguajes" class="dlg dlg-wide" aria-labelledby="langsTitle">
+    <form method="dialog" class="dlg-close"><button data-i18n-aria="close" aria-label="Cerrar">✕</button></form>
+    <h2 id="langsTitle" data-i18n="langs.title">Lenguajes soportados</h2>
+    <p data-i18n="langs.intro"></p>
+    <div id="langsList" class="langs-grid"></div>
+    <p class="muted small" data-i18n="langs.common"></p>
+    <p class="nota" data-i18n-html="langs.not"></p>
+  </dialog>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/lexer.js"></script>
+  <script src="js/parsers.js"></script>
+  <script src="js/cfg.js"></script>
+  <script src="js/grafo.js"></script>
+  <script src="js/ejemplos.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
