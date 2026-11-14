@@ -102,6 +102,7 @@
     renderTabs();
     updateDetect();
     analyzeAll(false);
+    if (McC.onLangChange) McC.onLangChange();
     if (announceIt) announce(t('live.lang'));
   }
   $('#btnIdioma').addEventListener('click', () => setUiLang(McC.uiLang === 'es' ? 'en' : 'es', true));
@@ -706,6 +707,18 @@
     const name = (state.selected.name || 'grafo').replace(/[^\w.-]+/g, '_');
     download(`grafo-${name}.svg`, xml, 'image/svg+xml');
   });
+
+  /* Resumen del análisis actual, usado por el informe de evaluación */
+  McC.resumenAnalisis = () => {
+    const R = state.results;
+    const max = R.reduce((a, r) => (!a || r.m.V > a.m.V ? r : a), null);
+    return {
+      archivos: state.files.filter((f) => f.src.trim()).map((f) => f.name),
+      funciones: R.length,
+      vmax: max ? max.m.V : 0,
+      vmaxNombre: max ? max.name : '',
+    };
+  };
 
   /* ------------------------------------------------------------ Inicio */
   addFile(McC.EJEMPLOS[0].name, McC.EJEMPLOS[0].src, 'auto');

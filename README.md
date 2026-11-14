@@ -50,6 +50,30 @@ index.html?lang=en
 - Ventana **Teoría**, con las fórmulas, qué cuenta como decisión, un ejemplo y la tabla de riesgo.
 - Ventana **Lenguajes**, con lo que se reconoce en cada lenguaje.
 
+### Evaluación del software (usabilidad ISO/IEC 25010:2011)
+El botón **📝 Evaluación del software** de la cabecera equivale a la «Evaluación Simulador» de [DeltaT](https://socratesunicordoba.github.io/DeltaT/). Usa el mismo instrumento y el mismo cálculo:
+
+- **24 ítems en escala Likert de 5 puntos**: 1 = Totalmente en desacuerdo … 5 = Totalmente de acuerdo.
+- **7 dimensiones de usabilidad**:
+
+  | Dimensión | Ítems |
+  |---|---|
+  | Reconocimiento de la adecuación | Q1–Q2 |
+  | Capacidad de aprendizaje | Q3–Q6 |
+  | Operabilidad | Q7–Q9 |
+  | Protección frente a errores | Q10–Q14 |
+  | Estética | Q15–Q20 |
+  | Accesibilidad | Q21 |
+  | Satisfacción | Q22–Q24 |
+
+- **Ítems invertidos**: Q3, Q6, Q9 y Q14 están redactados en sentido negativo y se invierten (6 − x) antes de promediar.
+- **Score** = (Media − 1) / 4 × 100, por dimensión y global. Niveles: **Alto ≥ 70 %**, **Moderado 50–69 %** y **Bajo < 50 %**.
+- **Identificación del evaluador**: nombre (obligatorio), materia, carrera, grupo y semestre. El semestre se calcula a partir de la fecha. Los datos se conservan mientras la pestaña siga abierta.
+- **Validaciones**: indica qué ítems faltan, con enlaces a cada uno, y los resalta.
+- **Informe .txt descargable** (`informe-usabilidad-<nombre>-<fecha>.txt`). Incluye la fecha, los datos del evaluador, el resumen del análisis (archivos, funciones y V(G) máximo), el instrumento, las respuestas originales y ajustadas, y los resultados por dimensión y globales.
+
+Los ítems y el cálculo están en `js/evaluacion.js`.
+
 ### Opción de conteo
 La casilla **Contar condiciones compuestas** decide cómo se tratan `&&`, `||`, `and`, `or` y `??`:
 - **Activada (McCabe extendido)**: cada condición simple es un nodo predicado, así que `if (a && b)` suma 2.
@@ -129,7 +153,8 @@ McCabe/
     ├── cfg.js         Grafo de flujo, métricas, caminos y riesgo
     ├── grafo.js       Disposición y dibujo SVG del grafo
     ├── ejemplos.js    Programas de ejemplo (JS, Python, Java, C)
-    └── app.js         Interfaz de usuario
+    ├── app.js         Interfaz de usuario
+    └── evaluacion.js  Evaluación del software (ISO/IEC 25010:2011, 24 ítems Likert)
 ```
 
 Los scripts son archivos JavaScript clásicos, no módulos, y comparten el espacio de nombres global `window.McC`. Por eso la aplicación funciona abriendo el archivo directamente (`file://`).
@@ -156,6 +181,17 @@ Los scripts son archivos JavaScript clásicos, no módulos, y comparten el espac
 - **Tableta (< 1100 px)**: el detalle pasa a una sola columna.
 - **Móvil (< 640 px)**: cabecera compacta con iconos, columnas secundarias ocultas en la tabla, botones más grandes para el tacto y sin desplazamiento horizontal.
 - Tema claro y oscuro (sigue al sistema; el botón ◐ lo cambia y la elección se recuerda).
+
+### Colores institucionales · Universidad de Córdoba
+Tomados del *Manual de Identidad Visual Corporativa Unicórdoba 2018*:
+
+| Color | RGB | Hex | Uso en la aplicación |
+|---|---|---|---|
+| Verde institucional | 88, 145, 81 | `#589151` | Franja superior, logo, barras de progreso y de score, nodo activo del recorrido |
+| Café (bandera) | 118, 72, 61 | `#76483D` | Botón «Evaluación del software», línea bajo la franja y resaltado de nodos |
+| Negro | 32, 30, 30 | `#201E1E` | Color del texto |
+
+El texto blanco sobre el verde oficial tiene un contraste de 3,8:1, inferior al 4,5:1 que exige WCAG AA. Por eso los botones y los textos verdes usan un tono más oscuro del mismo verde (`#477C43`, contraste 5:1). En el tema oscuro se usa un verde claro (`#8CC683`). Los tokens están al inicio de `css/estilos.css` (`--brand`, `--brand-cafe`, `--brand-negro`).
 
 ---
 
@@ -188,6 +224,15 @@ Los scripts son archivos JavaScript clásicos, no módulos, y comparten el espac
    - `noFall`: `case` sin continuación implícita;
    - `wordOps`: operadores `and`/`or`.
 2. Añade su descripción en `McC.LANG_INFO` (`js/i18n.js`).
+
+---
+
+## Autores
+
+- Daniel José Salas Álvarez M. Sc.
+- Pierre Augusto Peña salgado M. Sc.
+
+Universidad de Córdoba · Montería, Colombia
 
 ---
 

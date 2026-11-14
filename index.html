@@ -20,6 +20,9 @@
       </div>
     </div>
     <nav class="top-actions" aria-label="Opciones">
+      <button id="btnEval" class="eval-btn" type="button" aria-haspopup="dialog">
+        <span aria-hidden="true">📝</span><span class="btn-txt" data-i18n="btn.eval">Evaluación del software</span>
+      </button>
       <button id="btnTeoria" class="ghost" type="button" aria-haspopup="dialog">
         <span aria-hidden="true">📘</span><span class="btn-txt" data-i18n="btn.theory">Teoría</span>
       </button>
@@ -223,6 +226,12 @@
     </section>
   </main>
 
+  <footer class="pie">
+    <span class="pie-inst"><span class="pie-flag" aria-hidden="true"><span></span><span></span></span>Universidad de Córdoba · Montería, Colombia</span>
+    <span data-i18n="footer.txt">Analizador de complejidad ciclomática de McCabe · herramienta educativa</span>
+    <span class="pie-autores" data-i18n="authors">Autores: Daniel José Salas Álvarez M. Sc., Pierre Augusto Peña salgado M. Sc.</span>
+  </footer>
+
   <dialog id="teoria" class="dlg" aria-labelledby="teoriaTitle">
     <form method="dialog" class="dlg-close"><button data-i18n-aria="close" aria-label="Cerrar">✕</button></form>
     <h2 id="teoriaTitle" data-i18n="theory.title">Complejidad ciclomática de McCabe</h2>
@@ -238,6 +247,15 @@
     <p class="nota" data-i18n-html="langs.not"></p>
   </dialog>
 
+  <dialog id="evaluacion" class="dlg dlg-wide ev-dlg" aria-labelledby="evTitle" aria-describedby="evSub">
+    <form method="dialog" class="dlg-close"><button data-i18n-aria="close" aria-label="Cerrar">✕</button></form>
+    <h2 id="evTitle" data-i18n="ev.title">Informe de evaluación · Evaluación de usabilidad</h2>
+    <p id="evSub" class="muted" data-i18n="ev.sub">ISO/IEC 25010:2011 · 24 ítems · escala Likert de 5 puntos</p>
+    <div id="evBody" class="ev-body"></div>
+    <div id="evError" class="ev-error" role="alert" hidden></div>
+    <div id="evBtns" class="ev-btns"></div>
+  </dialog>
+
   <script src="js/i18n.js"></script>
   <script src="js/lexer.js"></script>
   <script src="js/parsers.js"></script>
@@ -245,5 +263,6 @@
   <script src="js/grafo.js"></script>
   <script src="js/ejemplos.js"></script>
   <script src="js/app.js"></script>
+  <script src="js/evaluacion.js"></script>
 </body>
 </html>
