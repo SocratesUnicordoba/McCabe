@@ -229,6 +229,7 @@ El texto blanco sobre el verde oficial tiene un contraste de 3,8:1, inferior al 
 
 ## Autores
 
+- Jorge Eliecer Gómez Gómez Ph. D.
 - Daniel José Salas Álvarez M. Sc.
 - Pierre Augusto Peña salgado M. Sc.
 

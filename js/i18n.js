@@ -161,7 +161,7 @@
     'langs.not': '<b>Sin soporte por ahora:</b> Ruby, Kotlin, Swift, Rust, Scala, Visual Basic, Pascal/Delphi, COBOL y SQL/PL-SQL. Los lenguajes con sintaxis parecida a C (Kotlin, Dart, Swift) pueden analizarse de forma aproximada eligiendo Java o JavaScript a mano.',
 
     'footer.txt': 'Analizador de complejidad ciclomática de McCabe · herramienta educativa',
-    'authors': 'Autores: Daniel José Salas Álvarez M. Sc., Pierre Augusto Peña salgado M. Sc.',
+    'authors': 'Autores: Jorge Eliecer Gómez Gómez Ph. D., Daniel José Salas Álvarez M. Sc., Pierre Augusto Peña salgado M. Sc.',
     'btn.eval': 'Evaluación del software',
     'ev.title': 'Informe de evaluación · Evaluación de usabilidad',
     'ev.sub': 'ISO/IEC 25010:2011 · 24 ítems · escala Likert de 5 puntos',
@@ -403,7 +403,7 @@ while (i &lt; n) { i++; }            // while     → 1 decisión
     'langs.not': '<b>Not supported yet:</b> Ruby, Kotlin, Swift, Rust, Scala, Visual Basic, Pascal/Delphi, COBOL and SQL/PL-SQL. C-like languages (Kotlin, Dart, Swift) can be analyzed roughly by picking Java or JavaScript by hand.',
 
     'footer.txt': 'McCabe cyclomatic complexity analyzer · educational tool',
-    'authors': 'Authors: Daniel José Salas Álvarez M. Sc., Pierre Augusto Peña salgado M. Sc.',
+    'authors': 'Authors: Jorge Eliecer Gómez Gómez Ph. D., Daniel José Salas Álvarez M. Sc., Pierre Augusto Peña salgado M. Sc.',
     'btn.eval': 'Software evaluation',
     'ev.title': 'Evaluation report · Usability evaluation',
     'ev.sub': 'ISO/IEC 25010:2011 · 24 items · 5-point Likert scale',
